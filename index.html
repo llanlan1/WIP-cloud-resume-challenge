@@ -137,7 +137,7 @@
     <p><a href="mailto:llanlan91@gmail.com">llanlan91@gmail.com</a></p>
     <p><a href="https://www.linkedin.com/in/llan?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app">LinkedIn</a>&nbsp; | &nbsp;<a href="https://">Portfolio</a></p>
     <p style="line-height: 2.79491;">&nbsp;</p>
-    <p style="font-size: 0.444em; font-style: italic; letter-spacing: 0.2px;">Created <span id="creationDate"></span> as part of the Cloud Resume Challenge, this page has attracted <span id="visitorCount">0</span> visitors.</p>
+    <p style="font-size: 0.444em; font-style: italic; letter-spacing: 0.2px;">Created <span id="creationDate"></span> as part of the Cloud Resume Challenge, this page has attracted <span id="getVisitorCount">0</span> visitors.</p>
     <p style="line-height: 0.03;">&nbsp;</p>
     </div>
 </div>
@@ -316,54 +316,22 @@ $('a[href=\\#top]').click(function(){
   );
 });
 
-        // Function URL from Azure
-        const functionUrl = 'https://resumebylan.azurewebsites.net/api/VisitorCounter';
-
-        // Function to increment the visitor count
-        async function incrementVisitorCount() {
-            try {
-                const response = await fetch(functionUrl, {
-                    method: 'POST', // Use POST to increment the visitor count
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ increment: 1 }) // Adjust the payload as necessary
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-
-                // Fetch the updated visitor count after incrementing
-                fetchVisitorCount();
-            } catch (error) {
-                console.error('There was a problem with the fetch operation:', error);
-            }
-        }
-
-        // Function to fetch the visitor count
-        async function fetchVisitorCount() {
-            try {
-                const response = await fetch(functionUrl, {
-                    method: 'GET', // Use GET to retrieve the visitor count
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-
-                const data = await response.json();
-                document.getElementById('visitor-count').innerText = data.visitorCount; // Adjust based on your response structure
-            } catch (error) {
-                console.error('There was a problem with the fetch operation:', error);
-            }
-        }
-
-        // Call this function to increment the count and fetch the updated count on page load
-        window.onload = incrementVisitorCount;
+window.addEventListener('DOMContentLoaded', (e) => {
+    getVisitorCount();
+})
+const myApiLink = {Your Azure function link};
+const getVisitorCount =() => {
+    let count = 0;
+fetch(myApiLink , {
+    mode: 'cors'
+}).then(response => {
+    return response.json() }
+).then(res => {
+const count = res;
+document.getElementById('visitorCount').innerHTML = count;
+})
+return count;
+}
 
     // Set the creation date (YYYY, MM - 1, DD)
     const creationDate = new Date(2024, 9, 19); // October is month 9 (0-indexed)
