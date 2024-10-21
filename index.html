@@ -137,7 +137,7 @@
     <p><a href="mailto:llanlan91@gmail.com">llanlan91@gmail.com</a></p>
     <p><a href="https://www.linkedin.com/in/llan?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app">LinkedIn</a>&nbsp; | &nbsp;<a href="https://">Portfolio</a></p>
     <p style="line-height: 2.79491;">&nbsp;</p>
-    <p style="font-size: 0.444em; font-style: italic; letter-spacing: 0.2px;">Created <span id="creationDate"></span> as part of the Cloud Resume Challenge, this page has attracted <span id="getVisitorCount">0</span> visitors.</p>
+    <p style="font-size: 0.444em; font-style: italic; letter-spacing: 0.2px;">Created <span id="creationDate"></span> as part of the Cloud Resume Challenge, this page has attracted <span id="visitorCount">0</span> visitors.</p>
     <p style="line-height: 0.03;">&nbsp;</p>
     </div>
 </div>
@@ -319,7 +319,24 @@ $('a[href=\\#top]').click(function(){
 window.addEventListener('DOMContentLoaded', (e) => {
     getVisitorCount();
 })
-const myApiLink = {Your Azure function link};
+const myApiLink = {https://resumebylan.azurewebsites.net};
+const getVisitorCount =() => {
+    let count = 0;
+fetch(myApiLink , {
+    mode: 'cors'
+}).then(response => {
+    return response.json() }
+).then(res => {
+const count = res;
+document.getElementById('visitorCount').innerHTML = count;
+})
+return count;
+}
+
+window.addEventListener('DOMContentLoaded', (e) => {
+    getVisitorCount();
+})
+
 const getVisitorCount =() => {
     let count = 0;
 fetch(myApiLink , {
