@@ -1,0 +1,26 @@
+/* Place your CSS styles in this file */
+
+/* Disable text selection */
+.no-select {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE/Edge */
+    user-select: none;         /* Non-prefixed version */
+    pointer-events: none;      /* Disable all interactions */
+}
+
+a {
+    pointer-events: auto; /* Allow interaction with links */
+}
+
+p {
+    text-align: left; /* Left-aligns the text */
+    display: inline-block; /* Allows line breaking to respect the width */
+}
+
+p::after {
+    content: ''; /* Ensures there's an extra line break if needed */
+    display: inline-block;
+    width: 100%; /* Forces the last line to expand */
+}
+
