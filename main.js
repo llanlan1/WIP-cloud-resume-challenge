@@ -35,20 +35,26 @@ $('a[href=\\#top]').click(function(){
 });
 
 
-async function updateCounter() {
-    try {
-        const response = await fetch("https://cloudresumetable.azurewebsites.net/api/VisitorCounter?code=-4FzRBehoDhcjZggNOYkOnEqWSiGX2G03oDl_HEBPj04AzFu9Jam3Q%3D%3D");
-        const data = await response.json();
-        
-        // Update the counter display
-        document.getElementById("counter").innerText = data.count;
-    } catch (error) {
-        console.error("Error fetching counter:", error);
-    }
-}
+window.addEventListener('DOMContentLoaded', (event) =>{
+    getVisitCount();
+})
 
-// Run when the page loads
-window.onload = updateCounter;
+const functionApiUrl = 'https://getresumecounter-lan.azurewebsites.net';
+const localFunctionApi = 'http://localhost:7071/api/GetResumeCounter-Lan';
+
+const getVisitCount = () => {
+    let count = 30;
+    fetch(functionApiUrl).then(response => {
+        return response.json()
+    }).then(response =>{
+        console.log("Website called function API.");
+        count = response.count;
+        document.getElementById("counter").innerText = count;
+    }).catch(function(error){
+        console.log(error);
+    });
+    return count
+}
 
     // Set the creation date (YYYY, MM - 1, DD)
     const creationDate = new Date(2024, 9, 19); // October is month 9 (0-indexed)
