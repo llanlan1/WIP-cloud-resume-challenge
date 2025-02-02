@@ -13,7 +13,7 @@ using System.Text;
 
 namespace Company.Function
 {
-    public static class GetResumeCounterLan  // Changed the class name to remove the hyphen
+    public static class GetResumeCounter-Lan  // Changed the class name to remove the hyphen
     {
         [FunctionName("GetResumeCounter-Lan")]  // The function name can remain the same with the hyphen
         public static HttpResponseMessage Run(
