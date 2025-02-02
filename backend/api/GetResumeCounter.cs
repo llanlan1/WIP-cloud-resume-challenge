@@ -1,54 +1,42 @@
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.WebJobs;
+using Newtonsoft.Json;
 using System.Net.Http;
+using Microsoft.Azure.Cosmos;
 using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+
 
 namespace Company.Function
 {
-    public class GetResumeCounter
+    public static class GetResumeCounter
     {
-        private readonly ILogger<GetResumeCounter> _logger;
-        private readonly CosmosClient _cosmosClient;
-
-        public GetResumeCounter(ILogger<GetResumeCounter> logger, CosmosClient cosmosClient)
+        [FunctionName("GetResumeCounter")]
+        
+        public static HttpResponseMessage Run(
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+            [CosmosDB(databaseName:"cloudresumechallengecosmos", collectionName: "Counter", ConnectionStringSetting = "cloudresumechallengecosmosConnectionString", Id = "1", PartitionKey = "1")] Counter counter,
+            [CosmosDB(databaseName:"cloudresumechallengecosmos", collectionName: "Counter", ConnectionStringSetting = "cloudresumechallengecosmosConnectionString", Id = "1", PartitionKey = "1")] out Counter updatedCounter,
+            ILogger log)
         {
-            _logger = logger;
-            _cosmosClient = cosmosClient;
-        }
+            log.LogInformation("C# HTTP trigger function processed a request.");
 
-        [Function("GetResumeCounter")]
-        public async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
-        {
-            _logger.LogInformation("Processing request.");
+            updatedCounter = counter;
+            updatedCounter.Count += 1;
 
-            var database = _cosmosClient.GetDatabase("cloudresumechallengecosmos");
-            var container = database.GetContainer("Counter");
-
-            var response = await container.ReadItemAsync<Counter>("1", new PartitionKey("1"));
-            var counter = response.Resource;
-
-            counter.Count += 1;
-            await container.ReplaceItemAsync(counter, "1");
-
-            var jsonToReturn = JsonSerializer.Serialize(counter);
+            var jsonToRetun = JsonConvert.SerializeObject(counter);
 
             return new HttpResponseMessage(System.Net.HttpStatusCode.OK)
             {
-                Content = new StringContent(jsonToReturn, Encoding.UTF8, "application/json")
+                Content = new StringContent(jsonToRetun, Encoding.UTF8, "application/json")
             };
-        }
-    }
 
-    public class Counter
-    {
-        public string Id { get; set; }
-        public string PartitionKey { get; set; }
-        public int Count { get; set; }
+            
+        }
     }
 }
