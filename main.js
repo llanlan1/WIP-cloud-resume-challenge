@@ -37,18 +37,16 @@ $('a[href=\\#top]').click(function(){
 
 
 window.addEventListener("DOMContentLoaded", (event) => {
-    // Get the last known count from localStorage
     let lastCount = localStorage.getItem("visitCount") || "Loading...";
     document.getElementById("counter").innerText = lastCount;
     
-    // Fetch the latest count
     getVisitCount();
 });
 
-const functionApi = "https://count-cloudresume-plus-one.azurewebsites.net/api/VisitorCounter?"; // Replace with your actual function URL
+const functionUrl = "https://count-cloudresume-plus-one.azurewebsites.net/api/VisitorCounter";
 
 const getVisitCount = () => {
-    fetch(functionApi)
+    fetch(functionUrl)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -59,10 +57,7 @@ const getVisitCount = () => {
             console.log("API Response:", data);
             const count = data.count;
             
-            // Update the HTML element
             document.getElementById("counter").innerText = count;
-            
-            // Store the latest count in localStorage
             localStorage.setItem("visitCount", count);
         })
         .catch((error) => {
