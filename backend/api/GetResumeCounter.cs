@@ -11,13 +11,11 @@ using System.Net.Http;
 using Microsoft.Azure.Cosmos;
 using System.Text;
 
-
 namespace Company.Function
 {
-    public static class GetResumeCounter-Lan
+    public static class GetResumeCounterLan  // Changed the class name to remove the hyphen
     {
-        [FunctionName("GetResumeCounter-Lan")]
-        
+        [FunctionName("GetResumeCounter-Lan")]  // The function name can remain the same with the hyphen
         public static HttpResponseMessage Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             [CosmosDB(databaseName:"cloudresumechallengecosmos", collectionName: "Counter", ConnectionStringSetting = "cloudresumechallengecosmosConnectionString", Id = "1", PartitionKey = "1")] Counter counter,
@@ -26,17 +24,18 @@ namespace Company.Function
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
+            // Assign current counter to updatedCounter and increment it
             updatedCounter = counter;
             updatedCounter.Count += 1;
 
-            var jsonToRetun = JsonConvert.SerializeObject(counter);
+            // Serialize the updated counter to JSON
+            var jsonToReturn = JsonConvert.SerializeObject(updatedCounter);
 
+            // Return the response with updated counter in JSON format
             return new HttpResponseMessage(System.Net.HttpStatusCode.OK)
             {
-                Content = new StringContent(jsonToRetun, Encoding.UTF8, "application/json")
+                Content = new StringContent(jsonToReturn, Encoding.UTF8, "application/json")
             };
-
-            
         }
     }
 }
