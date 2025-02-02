@@ -42,7 +42,7 @@ const functionUrl = 'https://count-cloudresume-plus-one.azurewebsites.net/api/Vi
 function updateVisitorCount() {
     // Data to send to the function (in case you want to send more data like the user's info)
     const data = {
-        id: "2",  // Specify the document ID in Cosmos DB
+        id: "1",  // Specify the document ID in Cosmos DB
         visitCount: 1,  // Increment visit count by 1 (you can also retrieve the current count and increment it)
         lastVisited: new Date().toISOString()  // Update the visit date to the current date
     };
