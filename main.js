@@ -45,7 +45,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     getVisitCount();
   });
   
-  const functionApi = "process.env.API_KEY";
+  const functionApi = process.env.API_KEY;
   
   const getVisitCount = () => {
     fetch(functionApi)
