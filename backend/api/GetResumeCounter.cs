@@ -14,9 +14,9 @@ using System.Text;
 
 namespace Company.Function
 {
-    public static class GetResumeCounter
+    public static class GetResumeCounter-Lan
     {
-        [FunctionName("GetResumeCounter")]
+        [FunctionName("GetResumeCounter-Lan")]
         
         public static HttpResponseMessage Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
