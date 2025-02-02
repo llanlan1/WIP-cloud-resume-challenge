@@ -37,35 +37,39 @@ $('a[href=\\#top]').click(function(){
 
 
 window.addEventListener("DOMContentLoaded", (event) => {
-    // Get the last known count from localStorage (default to 0 if not found)
+    // Get the last known count from localStorage
     let lastCount = localStorage.getItem("visitCount") || "Loading...";
     document.getElementById("counter").innerText = lastCount;
-  
-    // Fetch the latest count from the Azure Function
+    
+    // Fetch the latest count
     getVisitCount();
-  });
-  
-  const functionApi = process.env.API_KEY;
-  
-  const getVisitCount = () => {
+});
+
+const functionApi = "https://count-cloudresume-plus-one.azurewebsites.net/api/VisitorCounter?"; // Replace with your actual function URL
+
+const getVisitCount = () => {
     fetch(functionApi)
-      .then((response) => response.text()) // Fetch response as plain text
-      .then((data) => {
-        console.log("Raw response from API:", data);
-        const countMatch = data.match(/\d+/);
-        const count = countMatch ? parseInt(countMatch[0], 10) : 0;
-        console.log("Extracted count:", count);
-  
-        // Update the HTML element
-        document.getElementById("counter").innerText = count;
-  
-        // Store the latest count in localStorage
-        localStorage.setItem("visitCount", count);
-      })
-      .catch((error) => {
-        console.error("Error occurred:", error);
-      });
-  };
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("API Response:", data);
+            const count = data.count;
+            
+            // Update the HTML element
+            document.getElementById("counter").innerText = count;
+            
+            // Store the latest count in localStorage
+            localStorage.setItem("visitCount", count);
+        })
+        .catch((error) => {
+            console.error("Error occurred:", error);
+            document.getElementById("counter").innerText = "Error loading count";
+        });
+};
 
 
     // Set the creation date (YYYY, MM - 1, DD)
