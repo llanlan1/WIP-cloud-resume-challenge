@@ -45,7 +45,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     getVisitCount();
   });
   
-  const functionApi = "";
+  const functionApi = "count-cloudresume-plus-one.azurewebsites.net/api/VisitorCounter?code=1C4k_5sauSurQv9IdBGmsfHQjh_C3SWYM4YTZdVpimq3AzFubt6ZWg==";
   
   const getVisitCount = () => {
     fetch(functionApi)
