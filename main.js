@@ -35,36 +35,41 @@ $('a[href=\\#top]').click(function(){
 });
 
 
-window.addEventListener("DOMContentLoaded", (event) => {
-    // Get the last known count from localStorage (default to 0 if not found)
-    let lastCount = localStorage.getItem("visitCount") || "Loading...";
-    document.getElementById("counter").innerText = lastCount;
-  
-    // Fetch the latest count from the Azure Function
-    getVisitCount();
-  });
-  
-  const functionApi = "";
-  
-  const getVisitCount = () => {
-    fetch(functionApi)
-      .then((response) => response.text()) // Fetch response as plain text
-      .then((data) => {
-        console.log("Raw response from API:", data);
-        const countMatch = data.match(/\d+/);
-        const count = countMatch ? parseInt(countMatch[0], 10) : 0;
-        console.log("Extracted count:", count);
-  
-        // Update the HTML element
-        document.getElementById("counter").innerText = count;
-  
-        // Store the latest count in localStorage
-        localStorage.setItem("visitCount", count);
-      })
-      .catch((error) => {
-        console.error("Error occurred:", error);
-      });
-  };
+// Define the Azure Function URL
+const functionUrl = 'https://count-cloudresume-plus-one.azurewebsites.net/api/VisitorCounter?'; // Replace with your URL
+
+// Function to update the visitor count
+function updateVisitorCount() {
+    // Data to send to the function (in case you want to send more data like the user's info)
+    const data = {
+        id: "2",  // Specify the document ID in Cosmos DB
+        visitCount: 1,  // Increment visit count by 1 (you can also retrieve the current count and increment it)
+        lastVisited: new Date().toISOString()  // Update the visit date to the current date
+    };
+
+    // Send a POST request to the Azure Function
+    fetch(functionUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            // 'x-functions-key': '<your-api-key>' // Uncomment if your function requires an API key
+        },
+        body: JSON.stringify(data)  // Send the data as a JSON string
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Visitor count updated successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error updating visitor count:', error);
+    });
+}
+
+// Call the update function whenever the page is loaded (or you can trigger it based on user actions)
+document.addEventListener('DOMContentLoaded', function () {
+    updateVisitorCount();  // Update the count when the page is loaded
+});
+
 
     // Set the creation date (YYYY, MM - 1, DD)
     const creationDate = new Date(2024, 9, 19); // October is month 9 (0-indexed)
