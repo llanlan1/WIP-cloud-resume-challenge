@@ -35,8 +35,9 @@ $('a[href=\\#top]').click(function(){
 });
 
 
+
 // Define the Azure Function URL
-const functionUrl = 'https://count-cloudresume-plus-one.azurewebsites.net/api/VisitorCounter?'; // Replace with your URL
+const functionUrl = 'https://count-cloudresume-plus-one.azurewebsites.net/api/VisitorCounter'; // Ensure this is correct
 
 // Function to update the visitor count
 function updateVisitorCount() {
@@ -52,7 +53,8 @@ function updateVisitorCount() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            // 'x-functions-key': '<your-api-key>' // Uncomment if your function requires an API key
+            // Uncomment and add your function key if needed
+            // 'x-functions-key': '<your-api-key>' 
         },
         body: JSON.stringify(data)  // Send the data as a JSON string
     })
@@ -64,12 +66,6 @@ function updateVisitorCount() {
         console.error('Error updating visitor count:', error);
     });
 }
-
-// Call the update function whenever the page is loaded (or you can trigger it based on user actions)
-document.addEventListener('DOMContentLoaded', function () {
-    updateVisitorCount();  // Update the count when the page is loaded
-});
-
 
     // Set the creation date (YYYY, MM - 1, DD)
     const creationDate = new Date(2024, 9, 19); // October is month 9 (0-indexed)
