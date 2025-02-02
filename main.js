@@ -36,36 +36,72 @@ $('a[href=\\#top]').click(function(){
 
 
 
-// Define the Azure Function URL
-const functionUrl = 'https://count-cloudresume-plus-one.azurewebsites.net/api/VisitorCounter'; // Ensure this is correct
+const { CosmosClient } = require("@azure/cosmos");
 
-// Function to update the visitor count
-function updateVisitorCount() {
-    // Data to send to the function (in case you want to send more data like the user's info)
-    const data = {
-        id: "1",  // Specify the document ID in Cosmos DB
-        visitCount: 1,  // Increment visit count by 1 (you can also retrieve the current count and increment it)
-        lastVisited: new Date().toISOString()  // Update the visit date to the current date
-    };
+const endpoint = process.env.COSMOS_ENDPOINT;
+const key = process.env.COSMOS_KEY;
 
-    // Send a POST request to the Azure Function
-    fetch(functionUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // Uncomment and add your function key if needed
-            // 'x-functions-key': '<your-api-key>' 
-        },
-        body: JSON.stringify(data)  // Send the data as a JSON string
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Visitor count updated successfully:', data);
-    })
-    .catch(error => {
-        console.error('Error updating visitor count:', error);
-    });
+if (!endpoint || !key) {
+  throw new Error("COSMOS_ENDPOINT or COSMOS_KEY is not set correctly in the environment variables.");
 }
+
+const client = new CosmosClient({ endpoint, key });
+const databaseName = "Counter";
+const containerName = "Visitors";
+
+module.exports = async function (context, req) {
+  context.log("JavaScript HTTP trigger function processed a request.");
+
+  const documentId = "1"; // Define the document ID for visitor count
+
+  try {
+    // Try to read the document from Cosmos DB
+    let { resource: item } = await client
+      .database(databaseName)
+      .container(containerName)
+      .item(documentId, documentId)
+      .read()
+      .catch((error) => {
+        // If the document doesn't exist (404 error), initialize it
+        if (error.code === 404) {
+          context.log("Document not found. Initializing the document with count = 0.");
+          return { count: 0 };
+        }
+        // Log the full error message
+        context.log(`Error reading document: ${error.message}`);
+        throw error; // re-throw if it's another type of error
+      });
+
+    const currentCount = item.count || 0;
+
+    // Increment the count by 1
+    item.count = currentCount + 1;
+
+    // Upsert (insert or update) the document with the new count
+    await client
+      .database(databaseName)
+      .container(containerName)
+      .items.upsert(item);
+
+    context.log(`Visitor count updated from ${currentCount} to ${item.count}`);
+
+    // Send response with updated visitor count
+    context.res = {
+      status: 200,
+      body: `Visitor count updated to: ${item.count}`,
+    };
+  } catch (error) {
+    // Log full error information
+    context.log(`Error updating visitor count: ${error.message}`);
+    context.log(`Error stack trace: ${error.stack}`);
+
+    context.res = {
+      status: 500,
+      body: "An error occurred while updating the visitor count.",
+    };
+  }
+};
+
 
     // Set the creation date (YYYY, MM - 1, DD)
     const creationDate = new Date(2024, 9, 19); // October is month 9 (0-indexed)
