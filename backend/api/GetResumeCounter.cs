@@ -15,7 +15,7 @@ namespace Company.Function
 {
     public static class GetResumeCounter  // Changed the class name to remove the hyphen
     {
-        [Function("GetResumeCounter-Lan")]  // The function name can remain the same with the hyphen
+        [FunctionName("GetResumeCounter-Lan")]  // The function name can remain the same with the hyphen
         public static HttpResponseMessage Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             [CosmosDB(databaseName:"cloudresumechallengecosmos", collectionName: "Counter", ConnectionStringSetting = "cloudresumechallengecosmosConnectionString", Id = "1", PartitionKey = "1")] Counter counter,
