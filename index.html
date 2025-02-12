@@ -137,7 +137,7 @@
     <p><a href="mailto:llanlan91@gmail.com">llanlan91@gmail.com</a></p>
     <p><a href="https://www.linkedin.com/in/llan?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app">LinkedIn</a>&nbsp; | &nbsp;<a href="https://github.com/llanlan1">Portfolio</a></p>
     <p style="line-height: 2.79491;">&nbsp;</p>
-    <p style="font-size: 0.444em; font-style: italic; letter-spacing: 0.2px;">Created <span id="creationDate"></span> as part of the Cloud Resume Challenge, this page is still in progress. <span id="counter"></span> visitors.</p>
+    <div><p style="font-size: 0.444em; font-style: italic; letter-spacing: 0.2px;">Created <span id="creationDate"></span> as part of the Cloud Resume Challenge, this page is still in progress. <span id="count" style="border: 2px solid red; padding: 5px;">0</span> visitors.</p></div>
     <p style="line-height: 0.03;">&nbsp;</p>
     </div>
 </div>
@@ -279,7 +279,123 @@
     <img src="https://images.unsplash.com/photo-1579783901467-31b604eac7a8?q=80&w=3922&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Europeana Image" style="display: block; margin: 0 auto; width: 100%; max-height: 617.49px; object-fit: cover; opacity: 0">
 </div>
 </div>
-    <script src="main.js">
+    <script>
+                // Prevent right-click context menu and copy/paste for protected sections
+                document.querySelectorAll('.no-copy').forEach(element => {
+                    element.addEventListener('contextmenu', (e) => {
+                        e.preventDefault(); // Prevent right-click menu
+                    });
+        
+                    element.addEventListener('copy', (e) => {
+                        e.preventDefault(); // Prevent copy action
+                    });
+        
+                    element.addEventListener('paste', (e) => {
+                        e.preventDefault(); // Prevent paste action
+                    });
+        
+                    element.addEventListener('cut', (e) => {
+                        e.preventDefault(); // Prevent cut action
+                    });
+                });
+
+                const functionUrlPost = "https://ylb2glwqxgpbmykzkjkj2y5yte0dwfkr.lambda-url.ap-southeast-1.on.aws/";
+
+                async function updateVisitorCount() {
+                    try {
+                        const response = await fetch(functionUrlPost, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ increment: 1 })
+                        });
+                
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                
+                        const data = await response.json();
+                        
+                        // Update the UI with the new count
+                        const visitorCountElement = document.getElementById('count');
+                        if (visitorCountElement) {
+                            visitorCountElement.textContent = data.count;
+                        } else {
+                            console.error("Element with id 'visitor-count' not found");
+                        }
+                        
+                        return data.count;
+                    } catch (error) {
+                        console.error("Error updating visitor count:", error);
+                        // Optionally, update UI to show error state
+                        const visitorCountElement = document.getElementById('count');
+                        if (visitorCountElement) {
+                            visitorCountElement.textContent = 'Error loading count';
+                        }
+                    }
+                }
+                
+                // Call the function when the page loads
+                document.addEventListener('DOMContentLoaded', updateVisitorCount);
+                
+                                
+
+        
+                window.addEventListener('scroll', function() {
+                    const scrollPosition = window.scrollY;
+                    const parallaxBg = document.getElementById('parallax-bg');
+                    // Change the background position to create a parallax effect
+                    parallaxBg.style.backgroundPosition = `center ${scrollPosition * 0.5}px`;
+                });
+        
+        $('a[href=\\#top]').click(function(){
+          $('body').animate(
+            {
+              scrollTop: 0
+            }, 
+            90000
+          );
+        });
+        
+        
+        
+            // Set the creation date (YYYY, MM - 1, DD)
+            const creationDate = new Date(2024, 9, 19); // October is month 9 (0-indexed)
+            
+            // Get the current date
+            const currentDate = new Date();
+        
+            // Calculate the difference in milliseconds
+            const differenceInTime = currentDate - creationDate;
+        
+            // Convert the difference from milliseconds to days
+            const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+        
+            // Update the HTML to display how many days ago it was created
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('creationDate').innerText = `Created ${differenceInDays} days ago.`;
+            });
+        
+        
+            // Set the creation date (YYYY, MM - 1, DD)
+            const creationDate = new Date(2024, 9, 19); // October is month 9 (0-indexed)
+            
+            // Get the current date
+            const currentDate = new Date();
+        
+            // Calculate the difference in milliseconds
+            const differenceInTime = currentDate - creationDate;
+        
+            // Convert the difference from milliseconds to days
+            const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+        
+            // Update the HTML to display how many days ago it was created
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('creationDate').innerText = `Created ${differenceInDays} days ago.`;
+            });
+        
+        
     </script>
 </body>
 </html>
