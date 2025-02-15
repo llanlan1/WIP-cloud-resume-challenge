@@ -299,48 +299,9 @@
                     });
                 });
 
-                const functionUrlPost = "https://ylb2glwqxgpbmykzkjkj2y5yte0dwfkr.lambda-url.ap-southeast-1.on.aws/";
-
-                async function updateVisitorCount() {
-                    try {
-                        const response = await fetch(functionUrlPost, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({ increment: 1 })
-                        });
-                
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                
-                        const data = await response.json();
-                        
-                        // Update the UI with the new count
-                        const visitorCountElement = document.getElementById('count');
-                        if (visitorCountElement) {
-                            visitorCountElement.textContent = data.count;
-                        } else {
-                            console.error("Element with id 'visitor-count' not found");
-                        }
-                        
-                        return data.count;
-                    } catch (error) {
-                        console.error("Error updating visitor count:", error);
-                        // Optionally, update UI to show error state
-                        const visitorCountElement = document.getElementById('count');
-                        if (visitorCountElement) {
-                            visitorCountElement.textContent = 'Error loading count';
-                        }
-                    }
-                }
-                
-                // Call the function when the page loads
-                document.addEventListener('DOMContentLoaded', updateVisitorCount);
-                
-                                
-
+                fetch("https://5laqpks56e.execute-api.ap-southeast-1.amazonaws.com/updateVisitorCounter").then(response => response.text()).then(count => {
+                    document.getElementById("count").innerText = count;
+                });
         
                 window.addEventListener('scroll', function() {
                     const scrollPosition = window.scrollY;
